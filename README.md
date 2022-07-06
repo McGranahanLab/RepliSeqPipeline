@@ -1,6 +1,8 @@
 # RepliSeqPipeline
 Pipeline to process fastq files provided by the Repli-Seq protocol of G1, early S-phase and late S-phase reads.
 
+This pipeline is based on the pipeline provided by the 4D Nucleosome Data Coordination and Integration Center (4D Nucleome Network 2017) in combination with the pipeline published in (Marchal et al. 2018). 
+
 ## Getting started & Documentation
 1) Before running the pipeline a reference fasta file (e.g. ucsc.hg19.fasta) and a corresponding file with chromsome sizes (hg19.chr.sizes.txt) needs to be downloaded.
 
