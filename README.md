@@ -16,4 +16,4 @@ Pipeline to process fastq files provided by the Repli-Seq protocol of G1, early 
 
 3) Adapt parameters and paths in RepliSeq.wrapper.sh file
 
-More details about the pipeline itself can be found in the pipelineOverview.pptx file and the corresponding publication xxx.
+More details about the different pipeline steps can be found in the pipelineOverview.pptx file and the corresponding publication xxx.
