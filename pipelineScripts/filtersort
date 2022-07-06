@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+INPUT=$1         # bam file
+OUTPUT=$2        # default "./out"
+NTHREADS=$3      # default 8
+MEMPERTHREAD=$4  # default "16G"
+
+# # module load
+# ml purge
+# ml SAMtools/1.8-foss-2016b
+
+# check if file exists
+if [[ ! -f $INPUT ]]; then echo "file \"$INPUT\" not found"; exit 1; fi
+
+# default options
+if [ -z $MEMPERTHREAD ]; then
+  MEMPERTHREAD=16G
+fi
+
+if [ -z $NTHREADS ]; then
+  NTHREADS=8
+fi
+ 
+if [ -z $OUTPUT ]; then
+  OUTPUT=./out
+fi
+
+
+# run filter/sort command
+samtools view -bhq 20 -o $OUTPUT.q20.bam $INPUT
+samtools sort -m $MEMPERTHREAD --threads $NTHREADS -T $OUTPUT -o $OUTPUT.q20_sort.bam $OUTPUT.q20.bam
+

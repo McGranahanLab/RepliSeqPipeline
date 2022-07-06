@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+INPUT=$1
+REFERENCE=$2
+OUTDIR=$3  # default "."
+OUTPREFIX=$4  # default "out"
+
+# check input file exists
+if [[ ! -f $INPUT ]]; then >&2 echo "file \"$INPUT\" not found"; exit 1; fi
+if [[ ! -f $REFERENCE ]]; then >&2 echo "file \"$REFERENCE\" not found"; exit 1; fi
+
+# default options
+if [ -z $OUTDIR ]; then
+  OUTDIR=.
+fi
+
+if [ -z $OUTPREFIX ]; then
+  OUTPREFIX=out
+fi
+
+BG=$INPUT
+RF=$REFERENCE
+
+# if [[ $INPUT =~ \.gz$ ]]
+# then
+#   cp $INPUT $OUTDIR/input.bedGraph.gz
+#   gunzip $OUTDIR/input.bedGraph.gz
+#   INPUT=$OUTDIR/input.bedGraph
+# else
+#   cp $INPUT $OUTDIR/input.bedGraph
+#   INPUT=$OUTDIR/input.bedGraph
+# fi
+
+
+BASE=$OUTDIR/$OUTPREFIX
+OUTPUT="${BASE}.qnorm.bedGraph"
+BGLINES=$(cat $BG | wc -l)
+RFLINES=$(cat $RF | wc -l)
+
+if [[ $BGLINES -gt $RFLINES ]]; then
+  TMPREFN=$(mktemp)
+  COPYNUM=$((1+BGLINES/RFLINES))
+  cat $(yes "$RF" | head -n $COPYNUM) > $TMPREFN
+  RF=$TMPREFN
+  paste <(sort -T . -k4,4g $BG) <(shuf -n $BGLINES $RF | sort -k4,4g) | \
+  cut -f 1,2,3,8 | \
+  sort -k1,1 -k2,2n > $OUTPUT
+  rm -f $TMPREFN
+elif [[ $BGLINES -eq $RFLINES ]]; then
+  paste <(sort -T . -k4,4g $BG) <(sort -T . -k4,4g $RF) | \
+  cut -f 1,2,3,8 | sort -k1,1 -k2,2n > $OUTPUT
+else
+  paste <(sort -T . -k4,4g $BG) <(shuf -n $BGLINES $RF | sort -k4,4g) | \
+  cut -f 1,2,3,8 | sort -k1,1 -k2,2n > $OUTPUT
+fi
+
+#bgzip $OUTPUT

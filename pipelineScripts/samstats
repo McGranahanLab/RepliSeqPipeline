@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+INPUT=$1
+OUTPUT=$2
+
+# load conda environment
+#ml Anaconda2/5.1.0
+#source activate my_env
+
+# load module
+# ml purge
+# ml SAMtools/1.8-foss-2016b
+
+# run command 
+samtools stats $INPUT > $OUTPUT
+#plot-bamstats -p $OUTPUT.pdf $OUTPUT
+
+#deactivate conda environment
+#source deactivate

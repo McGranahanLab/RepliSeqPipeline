@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+INPUT=$1
+OUTPUT=$2
+
+# module load
+# ml purge
+# ml SAMtools/1.8-foss-2016b
+  
+# check if file exists
+if [[ ! -f $INPUT ]]; then echo "file \"$INPUT\" not found"; exit 1; fi
+
+# default options
+if [ -z $OUTPUT ]; then
+  OUTDIR=./out
+fi
+
+# PE vs SE
+UCOUNT=$(samtools view $INPUT | cut -f 1 | head -n 1000 | sort | uniq | wc -l)
+  
+if [[ UCOUNT -lt 1000 ]]; then
+  PAIRARG=""  # PE
+else
+  PAIRARG="-s"  # SE
+fi 
+
+# run dedup command
+samtools rmdup $PAIRARG $INPUT $OUTPUT
+
+#index bam file
+samtools index $OUTPUT

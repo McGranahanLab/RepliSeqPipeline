@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -o pipefail
+set -e
+
+INPUT=$1
+CHROMSIZE=$2
+OUTPUT=$3
+WINSIZE=$4
+
+if [ -z $OUTPUT ]; then
+  OUTPUT=./out
+fi
+
+if [ -z $WINSIZE ]; then
+  WINSIZE=5000
+fi
+
+# check if file exists
+if [[ ! -f $INPUT ]]; then >&2 echo "file \"$INPUT\" not found"; exit 1; fi
+if [[ ! -f $CHROMSIZE ]]; then >&2 echo "file \"$CHROMSIZE\" not found"; exit 1; fi
+
+# output file name
+OUTPUT_FILE=${OUTPUT}.w${WINSIZE}.RPKM.bedGraph
+BINFILE=${OUTPUT}.w${WINSIZE}.bin
+COVERAGEFILE=${OUTPUT}.w${WINSIZE}.cov
+FULLCHRSIZE=${OUTPUT}.full.chrsize
+
+# determine scale
+SCALE=$(echo "1000000/$(samtools view -c $INPUT)" | bc -l)
+
+# get full chromsizes from bam header
+samtools view -H $INPUT | /camp/lab/swantonc/working/dietzem/repli-seq-pipeline/scripts/bamH2chrsize > $FULLCHRSIZE
+
+# create equal sized bins for each chromosome from the bam header
+bedtools makewindows -w $WINSIZE -g $FULLCHRSIZE > $BINFILE
+ 
+# count reads (coverage) in each bin 
+bedtools coverage -counts -sorted -a $BINFILE -b $INPUT > $COVERAGEFILE
+
+# only use chromosomes specified in $CHROMSIZE from config file (e.g. chr 1:22, X and Y)
+/camp/lab/swantonc/working/dietzem/repli-seq-pipeline/scripts/filtercov $COVERAGEFILE $CHROMSIZE > $COVERAGEFILE.filtered
+
+awk -v scale=$SCALE '{print $1,$2,$3,$4*1000*(scale/($3-$2)) }' OFS='\t' $COVERAGEFILE.filtered > $OUTPUT_FILE
+#gzip $OUTPUT_FILE
+

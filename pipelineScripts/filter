@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+INPUT=$1  # .bg
+FILTERBED=$2
+OUTPUT=$3  
+
+
+# default options
+if [ -z $OUTPUT ]; then
+  OUTDIR=./out
+fi
+
+# check input file
+if [[ ! -f $INPUT ]]; then >&2 echo "file \"$INPUT\" not found"; exit 1; fi
+if [[ ! -f $FILTERBED ]]; then >&2 echo "file \"$FILTERBED\" not found"; exit 1; fi
+
+# output file name  
+OUTPUT_FILE="${OUTPUT}.filteredRPKM.bedGraph"
+  
+bedtools intersect -sorted -u -a $INPUT -b $FILTERBED > $OUTPUT_FILE

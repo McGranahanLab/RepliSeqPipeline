@@ -1,0 +1,7 @@
+Patient	Sample	Type	FQ1	FQ2
+H1650	H1650_G1	G1	fastq_dir/ZHA282A20_S19_L007_R1_001.fastq.gz	fastq_dir/ZHA282A20_S19_L007_R2_001.fastq.gz
+H1650	H1650_G1	G1	fastq_dir/ZHA282A20_S19_L008_R1_001.fastq.gz	fastq_dir/ZHA282A20_S19_L008_R2_001.fastq.gz
+H1650	H1650_Early	Early	fastq_dir/ZHA282A21_S20_L007_R1_001.fastq.gz	fastq_dir/ZHA282A21_S20_L007_R2_001.fastq.gz
+H1650	H1650_Early	Early	fastq_dir/ZHA282A21_S20_L008_R1_001.fastq.gz	fastq_dir/ZHA282A21_S20_L008_R2_001.fastq.gz
+H1650	H1650_Late	Late	fastq_dir/ZHA282A22_S21_L007_R1_001.fastq.gz	fastq_dir/ZHA282A22_S21_L007_R2_001.fastq.gz
+H1650	H1650_Late	Late	fastq_dir/ZHA282A22_S21_L008_R1_001.fastq.gz	fastq_dir/ZHA282A22_S21_L008_R2_001.fastq.gz

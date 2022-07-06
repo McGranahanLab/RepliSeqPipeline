@@ -1,0 +1,46 @@
+#!/bin/bash
+set -o pipefail
+
+FASTQ1=$1 
+FASTQ2=$2 
+INDEX=$3
+OUTPUT=$4
+NTHREADS=$5
+MEMPERTHREAD=$6
+
+# module load
+# ml purge
+# ml SAMtools/1.8-foss-2016b
+# ml BWA/0.7.17-foss-2018b
+
+
+# default options
+if [ -z $MEMPERTHREAD ]; then
+  MEMPERTHREAD=5G
+fi
+
+if [ -z $NTHREADS ]; then
+  NTHREADS=1
+fi
+ 
+ # index reference if index file is missing
+ if [[ ! -f $INDEX.sa ]]; then
+ 	bwa index $INDEX
+ fi
+
+#single-end reads
+if [[ $FASTQ2 == 'NA' ]]
+then
+	if [[ ! -f $FASTQ1 ]]; then echo "fastq file \"$FASTQ1\" not found"; exit 1; fi
+	bwa mem -v 2 -t $NTHREADS $INDEX $FASTQ1 | samtools view -Shb - > $OUTPUT.bam
+fi
+
+#paired-end reads
+if [[ $FASTQ2 != "NA" ]]
+then
+	if [[ ! -f $FASTQ1 ]]; then echo "fastq file \"$FASTQ1\" not found"; exit 1; fi
+	if [[ ! -f $FASTQ2 ]]; then echo "fastq file \"$FASTQ2\" not found"; exit 1; fi
+	bwa mem -M -v 2 -t $NTHREADS $INDEX $FASTQ1 $FASTQ2 | samtools view -Shb - > $OUTPUT.bam || exit
+fi
+
+
