@@ -1,7 +1,7 @@
 # RepliSeqPipeline
 Pipeline to process fastq files provided by the Repli-Seq protocol of G1, early S-phase and late S-phase reads.
 
-# Getting started & Documentation
+## Getting started & Documentation
 1) Before running the pipeline a reference fasta file (e.g. ucsc.hg19.fasta) and a corresponding file with chromsome sizes (hg19.chr.sizes.txt) needs to be downloaded.
 
 2) The pipeline requires a design file with the following columns as input (see examples/designFile.txt):
